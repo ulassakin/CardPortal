@@ -1,6 +1,6 @@
 #include <M5Cardputer.h>
 #include <M5GFX.h>
-#include "fonts/PressStart2P_Regular7pt7b.h"   // senin fontun
+#include "fonts/PressStart2P_Regular7pt7b.h"   // My font
 #include "intro.h"
 
 #define COL_BG     BLACK
@@ -13,7 +13,7 @@ M5GFX &dsp = M5Cardputer.Display;
 
 inline int rnd(int a, int b) { return random(a, b); }
 
-// Basit scanline efekti
+// Basic scanline effect
 void drawScanlines() {
   for (int i = 0; i < 3; i++) {
     int y = rnd(20, dsp.height()-20);
@@ -21,7 +21,7 @@ void drawScanlines() {
   }
 }
 
-// Neon kart + portal logosu
+// Neon card + portal logo
 void drawCardPortalLogo(int cx, int cy) {
   dsp.drawRoundRect(cx-18, cy-12, 36, 24, 4, COL_PURPLE);
   dsp.drawRoundRect(cx-19, cy-13, 38, 26, 5, COL_PINK);
@@ -29,7 +29,7 @@ void drawCardPortalLogo(int cx, int cy) {
   dsp.drawCircle(cx, cy, 3, COL_PINK);
 }
 
-// Başlığı hafif glitch ile çiz
+// Draw title with a glitch effect
 void drawGlitchTitle(const char* txt, int baseX, int baseY, uint16_t col) {
   dsp.setFont(&PressStart2P_Regular7pt7b);
   dsp.setTextColor(col);
@@ -47,7 +47,7 @@ void drawGlitchTitle(const char* txt, int baseX, int baseY, uint16_t col) {
   drawCardPortalLogo(logoX, logoY);
 }
 
-// Senin intro fonksiyonun
+// My intro function to run it on main.cpp
 void runMinimalIntro() {
   const char* title = "CARDPORTAL";
 
