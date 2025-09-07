@@ -6,10 +6,10 @@
 void setup() {
   auto cfg = M5.config();
   M5Cardputer.begin(cfg);
-  runMinimalIntro();   // açılış ekranı
-  portal_begin();      // captive portal başlat
+  runMinimalIntro();   // Intro
+  portal_begin();      // Start the captive portal
 }
 
 void loop() {
-  portal_loop_once();  // captive portal döngüsü
+  portal_loop_once();  // Captive Portal loop
 }
