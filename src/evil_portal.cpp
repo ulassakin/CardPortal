@@ -1,23 +1,22 @@
-#include <Arduino.h>  //not needed in the arduino ide
+#include <Arduino.h>  
 
 // Captive Portal
 #include <AsyncTCP.h> // Low-level async TCP for ESP32 
-#include <DNSServer.h> // Tiny DNS server. answe of what is IO of xyz.com and answer is ESP'a AP IP
+#include <DNSServer.h> // Tiny DNS server. answe of what is IP of xyz.com and answer is ESP'a AP IP
 #include <ESPAsyncWebServer.h>	//Hıgh-Performance, event-driven HTTP server. 
 #include <esp_wifi.h>			
 
-// Pre reading on the fundamentals of captive portals https://textslashplain.com/2022/06/24/captive-portals/
 
-const char *ssid = "StarBucksWifi";  // FYI The SSID can't have a space in it.
-// const char * password = "12345678"; //Atleast 8 chars
+const char *ssid = "StarBucksWifi";  
+
 const char *password = NULL;  // no password
 
 #define MAX_CLIENTS 4	// ESP32 supports up to 10 but I have not tested it yet
-#define WIFI_CHANNEL 6	// 2.4ghz channel 6 https://en.wikipedia.org/wiki/List_of_WLAN_channels#2.4_GHz_(802.11b/g/n/ax)
+#define WIFI_CHANNEL 6	
 
-const IPAddress localIP(4, 3, 2, 1);		   // the IP address the web server, Samsung requires the IP to be in public space
-const IPAddress gatewayIP(4, 3, 2, 1);		   // IP address of the network should be the same as the local IP for captive portals
-const IPAddress subnetMask(255, 255, 255, 0);  // no need to change: https://avinetworks.com/glossary/subnet-mask/
+const IPAddress localIP(4, 3, 2, 1);		   
+const IPAddress gatewayIP(4, 3, 2, 1);		   
+const IPAddress subnetMask(255, 255, 255, 0);  
 
 const String localIPURL = "http://4.3.2.1";	 // a string version of the local IP with http, used for redirecting clients to your webpage
 
@@ -69,29 +68,18 @@ void startSoftAccessPoint(const char *ssid, const char *password, const IPAddres
 	// Start the soft access point with the given ssid, password, channel, max number of clients
 	WiFi.softAP(ssid, password, WIFI_CHANNEL, 0, MAX_CLIENTS);
 
-	// Disable AMPDU RX on the ESP32 WiFi to fix a bug on Android
-	//esp_wifi_stop();
-	//esp_wifi_deinit();
-	//wifi_init_config_t my_config = WIFI_INIT_CONFIG_DEFAULT();
-	//my_config.ampdu_rx_enable = false;
-	//esp_wifi_init(&my_config);
-	//esp_wifi_start();
-	//vTaskDelay(100 / portTICK_PERIOD_MS);  // Add a small delay
+	
 }
 
-void setUpWebserver(AsyncWebServer &server, const IPAddress &localIP) {
-	//======================== Webserver ========================
-	// WARNING IOS (and maybe macos) WILL NOT POP UP IF IT CONTAINS THE WORD "Success" https://www.esp8266.com/viewtopic.php?f=34&t=4398
-	// SAFARI (IOS) IS STUPID, G-ZIPPED FILES CAN'T END IN .GZ https://github.com/homieiot/homie-esp8266/issues/476 this is fixed by the webserver serve static function.
-	// SAFARI (IOS) there is a 128KB limit to the size of the HTML. The HTML can reference external resources/images that bring the total over 128KB
-	// SAFARI (IOS) popup browser has some severe limitations (javascript disabled, cookies disabled)
+void setUpWebserver(AsyncWebServer &server, const IPAddress &localIP) { // Webserver
+	
 
 	// Required
 	server.on("/connecttest.txt", [](AsyncWebServerRequest *request) { request->redirect("http://logout.net"); });	// windows 11 captive portal workaround
-	server.on("/wpad.dat", [](AsyncWebServerRequest *request) { request->send(404); });								// Honestly don't understand what this is but a 404 stops win 10 keep calling this repeatedly and panicking the esp32 :)
+	server.on("/wpad.dat", [](AsyncWebServerRequest *request) { request->send(404); });								
 
-	// Background responses: Probably not all are Required, but some are. Others might speed things up?
-	// A Tier (commonly used by modern systems)
+	// Background responses
+	
 	server.on("/generate_204", [](AsyncWebServerRequest *request) { request->redirect(localIPURL); });		   // android captive portal redirect
 	server.on("/redirect", [](AsyncWebServerRequest *request) { request->redirect(localIPURL); });			   // microsoft redirect
 	server.on("/hotspot-detect.html", [](AsyncWebServerRequest *request) { request->redirect(localIPURL); });  // apple call home
@@ -99,11 +87,8 @@ void setUpWebserver(AsyncWebServer &server, const IPAddress &localIP) {
 	server.on("/success.txt", [](AsyncWebServerRequest *request) { request->send(200); });					   // firefox captive portal call home
 	server.on("/ncsi.txt", [](AsyncWebServerRequest *request) { request->redirect(localIPURL); });			   // windows call home
 
-	// B Tier (uncommon)
-	//  server.on("/chrome-variations/seed",[](AsyncWebServerRequest *request){request->send(200);}); //chrome captive portal call home
-	//  server.on("/service/update2/json",[](AsyncWebServerRequest *request){request->send(200);}); //firefox?
-	//  server.on("/chat",[](AsyncWebServerRequest *request){request->send(404);}); //No stop asking Whatsapp, there is no internet connection
-	//  server.on("/startpage",[](AsyncWebServerRequest *request){request->redirect(localIPURL);});
+	
+	
 
 	// return 404 to webpage icon
 	server.on("/favicon.ico", [](AsyncWebServerRequest *request) { request->send(404); });	// webpage icon
@@ -154,7 +139,7 @@ void portal_begin() {
 }
 
 void portal_loop_once() {
-	dnsServer.processNextRequest();	 // I call this atleast every 10ms in my other projects (can be higher but I haven't tested it for stability)
-	delay(DNS_INTERVAL);			 // seems to help with stability, if you are doing other things in the loop this may not be needed
+	dnsServer.processNextRequest();	 
+	delay(DNS_INTERVAL);			 
 }
 
