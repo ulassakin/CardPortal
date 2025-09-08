@@ -1,19 +1,29 @@
 #include "M5Cardputer.h"
 #include "M5GFX.h"
+#include <SPI.h>
+#include <SD.h>
+#include "menu.h"
 #define COL_BG     BLACK
 #define COL_PURPLE 0x780F
 #define COL_PINK   0xF81F
 #define COL_BLUE   0x07FF
 #define COL_WHITE  WHITE
+
+
+#define SD_SPI_SCK_PIN  40
+#define SD_SPI_MISO_PIN 39
+#define SD_SPI_MOSI_PIN 14
+#define SD_SPI_CS_PIN   12
+
 #include "fonts/PressStart2P_Regular7pt7b.h"
 
-enum AppState {
-    PRESS,
-    ENTER_SSID,
-    ENTER_PASS,
-    SELECT_HTML,
-    RUNNING,
-};
+//enum AppState {
+  //  PRESS,
+    //ENTER_SSID,
+//    ENTER_PASS,
+  //  SELECT_HTML,
+   // RUNNING,
+//};
 
 String SSID = "";
 String pass = "";
@@ -28,7 +38,7 @@ const unsigned long blinkInterval = 500; // ms
 M5GFX &dsp = M5Cardputer.Display;
 bool pressDrawn = false;
 
-AppState currentState = PRESS;
+AppState currentState;
 
 M5Canvas portalCanvas(&M5Cardputer.Display);
 
@@ -96,8 +106,21 @@ void drawWithCursor() {
     portalCanvas.pushSprite(0, 0);
 }
 
+void menu_setup(){
+    portalCanvas.createSprite(dsp.width(), dsp.height());
+
+}
+
 void menu_loop() {
     M5Cardputer.update();
+
+    if (currentState == ENTER_PASS || currentState == ENTER_SSID) {
+        if (millis() - lastBlink >= blinkInterval) {
+            cursorVisible = !cursorVisible;
+            lastBlink = millis();
+            drawWithCursor();
+        }
+    }
 
     switch (currentState) {
         case PRESS: {
@@ -105,6 +128,19 @@ void menu_loop() {
                 drawPress();
                 pressDrawn = true;
             }
+
+            if (M5Cardputer.Keyboard.isChange() && M5Cardputer.Keyboard.isPressed()) {
+                auto keys = M5Cardputer.Keyboard.keysState();
+                if (keys.enter) {
+                    currentState = ENTER_SSID;
+                    drawWithCursor();
+                }
+            }
+
+            break;
+        }
+
+        case ENTER_SSID: {
             break;
         }
     }
