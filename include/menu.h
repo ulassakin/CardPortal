@@ -14,3 +14,4 @@ extern AppState currentState;
 
 void menu_loop();
 void drawPress();
+void menu_setup();
