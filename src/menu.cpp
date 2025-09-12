@@ -141,6 +141,16 @@ void menu_loop() {
         }
 
         case ENTER_SSID: {
+            if (M5Cardputer.Keyboard.isChange() && M5Cardputer.Keyboard.isPressed()) {
+                auto keys = M5Cardputer.Keyboard.keysState();
+                if(keys.enter){
+                    if (currentText.length() > 0) {
+                        currentText = "";
+                        cursorPosition = 0;
+                        currentState = ENTER_PASS;
+                    }
+                }
+            }
             break;
         }
     }
