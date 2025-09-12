@@ -70,9 +70,21 @@ void drawWithCursor() {
     const int startX = 0;
     const int startY = 0;
 
-    String header = (currentState == ENTER_SSID) 
-                  ? "Enter SSID:"
-                  : "Enter Password: ";
+    String header;
+
+    if (currentState == ENTER_SSID) {
+        header = "Enter SSID:";
+    } 
+    else if (currentState == ENTER_PASS) {
+        header = "Enter Password:";
+    } 
+    else if (currentState == SELECT_HTML) {
+        header = "Select HTML\n";
+    } 
+    else {
+        header = "";
+    }
+
 
     portalCanvas.setCursor(startX, startY);
     portalCanvas.setTextColor(WHITE, BLACK);
@@ -192,6 +204,7 @@ void menu_loop() {
                         currentText = "";
                         cursorPosition = 0;
                         currentState = SELECT_HTML;
+                        drawWithCursor();
                     }
                 }
 
@@ -223,6 +236,10 @@ void menu_loop() {
                     }
                 }
             }
+            break;
+        }
+
+        case SELECT_HTML: {
             break;
         }
     }
