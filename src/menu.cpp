@@ -150,6 +150,34 @@ void menu_loop() {
                         currentState = ENTER_PASS;
                     }
                 }
+
+                else if (keys.del && currentText.length() > 0) {
+                    if (cursorPosition > 0) {
+                        currentText.remove(cursorPosition - 1, 1);
+                        cursorPosition--;
+                    }
+                    drawWithCursor();
+                }
+
+                else {
+                    for (auto k : keys.word) {
+                        if (k == 44 & cursorPosition > 0) {
+                            cursorPosition--;
+                            drawWithCursor();
+                        }
+                        else if (k == 47 && (cursorPosition < currentText.length())) {
+                            cursorPosition++;
+                            drawWithCursor();
+                        }
+                        else if (k >= 32 && k <= 126) {
+                            String left  = currentText.substring(0, cursorPosition);
+                            String right = currentText.substring(cursorPosition);
+                            currentText = left + (char)k + right;
+                            cursorPosition++;
+                            drawWithCursor();
+                        }
+                    }
+                }
             }
             break;
         }
