@@ -88,16 +88,7 @@ CardPortal/
 
 ---
 
-## 🛠️ Current Status
-- ✅ State machine for SSID / Password input  
-- ✅ SD card initialization & HTML file storage  
-- ✅ Basic HTML templates created in variables  
-- 🔄 To Do:
-  - UI for listing `.html` files on SD
-  - Captive portal serving selected HTML
-  - Add more animations and polish
 
----
 
 ## 📜 License
 MIT License © 2025 Ulaş Sakın
