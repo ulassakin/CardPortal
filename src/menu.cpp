@@ -118,9 +118,28 @@ void drawWithCursor() {
     portalCanvas.pushSprite(0, 0);
 }
 
+static void writeTextFile(const String& path, const String& content) {
+    SD.remove(path); // ensure truncate
+    File f = SD.open(path, FILE_WRITE);
+    if (!f) return;
+    f.print(content);
+    f.close();
+}
+
+
+
 void menu_setup(){
     portalCanvas.createSprite(dsp.width(), dsp.height());
 
+    Serial.begin(115200);
+
+    SPI.begin(SD_SPI_SCK_PIN, SD_SPI_MISO_PIN, SD_SPI_MOSI_PIN, SD_SPI_CS_PIN);
+    if (!SD.begin(SD_SPI_CS_PIN, SPI, 25000000)) {
+        Serial.println("SD init failed (card missing or init error). Running without SD.");
+    } else {
+        Serial.println("SD init OK");
+        
+    }
 }
 
 void menu_loop() {
