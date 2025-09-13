@@ -31,6 +31,9 @@ int cursorPosition = 0;
 
 String currentText = "";
 
+String htmlFiles[20];
+int htmlFileCount = 0;
+
 bool cursorVisible = true;
 unsigned long lastBlink = 0;
 const unsigned long blinkInterval = 500; // ms
@@ -41,6 +44,108 @@ bool pressDrawn = false;
 AppState currentState;
 
 M5Canvas portalCanvas(&M5Cardputer.Display);
+
+
+// ---- Captive Portal HTML Templates ----
+
+// 1. Basit login ekranı
+const char* html_login = R"rawliteral(
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Free WiFi Login</title>
+  <style>
+    body { font-family: Arial; text-align: center; background:#111; color:#eee; }
+    .box { margin-top:50px; padding:20px; background:#222; border-radius:8px; display:inline-block; }
+    input { padding:8px; margin:5px; width:200px; }
+    button { padding:10px 20px; background:#4CAF50; color:white; border:none; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <h2>Welcome to Free WiFi</h2>
+  <div class="box">
+    <form action="/login" method="POST">
+      <input type="text" name="user" placeholder="Username"><br>
+      <input type="password" name="pass" placeholder="Password"><br>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</body>
+</html>
+)rawliteral";
+
+// 2. Küçük anket formu
+const char* html_survey = R"rawliteral(
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quick Survey</title>
+  <style>
+    body { font-family: Verdana; background:#f0f0f0; text-align:center; }
+    .form { margin-top:50px; }
+    input, select { padding:8px; margin:5px; width:220px; }
+    button { margin-top:10px; padding:10px 20px; }
+  </style>
+</head>
+<body>
+  <h2>Before you continue, please answer:</h2>
+  <div class="form">
+    <form action="/survey" method="POST">
+      <input type="text" name="age" placeholder="Your Age"><br>
+      <select name="device">
+        <option value="">Device Type</option>
+        <option>Phone</option>
+        <option>Laptop</option>
+        <option>Tablet</option>
+      </select><br>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</body>
+</html>
+)rawliteral";
+
+// 3. Duyuru ekranı
+const char* html_notice = R"rawliteral(
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Important Notice</title>
+  <style>
+    body { font-family: Tahoma; background:#fff8e1; text-align:center; color:#333; }
+    .box { margin:50px auto; padding:20px; border:1px solid #ccc; width:300px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Attention</h2>
+    <p>This network is monitored. By continuing, you agree to our terms.</p>
+    <form action="/accept" method="POST">
+      <button type="submit">I Accept</button>
+    </form>
+  </div>
+</body>
+</html>
+)rawliteral";
+
+// 4. Minimal karşılama
+const char* html_welcome = R"rawliteral(
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome</title>
+  <style>
+    body { display:flex; justify-content:center; align-items:center;
+           height:100vh; background:#282c34; color:white; font-family:sans-serif; }
+  </style>
+</head>
+<body>
+  <h1>Welcome to CardPortal</h1>
+</body>
+</html>
+)rawliteral";
+
+
 
 void drawPress() {
     dsp.fillScreen(COL_BG);
@@ -118,6 +223,10 @@ void drawWithCursor() {
     portalCanvas.pushSprite(0, 0);
 }
 
+static String pathForIndex(int idx1based) {
+    return "/note" + String(idx1based) + ".txt";
+}
+
 static void writeTextFile(const String& path, const String& content) {
     SD.remove(path); // ensure truncate
     File f = SD.open(path, FILE_WRITE);
@@ -126,7 +235,26 @@ static void writeTextFile(const String& path, const String& content) {
     f.close();
 }
 
-
+void loadHTMLFromSD() {
+    int count = 0;
+    for (int i = 1; i <= 20; ++i) {
+        String filename = pathForIndex(i);
+        File file = SD.open(filename);
+        if (file) {
+            String content = "";
+            while (file.available()) {
+                char c = file.read();
+                // store only printable ASCII to avoid weird control keys
+                if (c >= 32 && c <= 126) content += c;
+            }
+            file.close();
+            content.trim();
+            if (content.length() > 0) {
+                notes[noteCount++] = content;
+            }
+        }
+    }
+}
 
 void menu_setup(){
     portalCanvas.createSprite(dsp.width(), dsp.height());
