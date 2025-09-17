@@ -225,9 +225,16 @@ void drawWithCursor() {
     portalCanvas.pushSprite(0, 0);
 }
 
-static String pathForIndex(int idx1based) {
-    return "/note" + String(idx1based) + ".txt";
+static String htmlPathForIndex(int index) {
+    switch(index) {
+        case 0: return "/login.html";
+        case 1: return "/survey.html";
+        case 2: return "/notice.html";
+        case 3: return "/welcome.html";
+        default: return "";
+    }
 }
+
 
 static void writeTextFile(const String& path, const String& content) {
     SD.remove(path); // ensure truncate
@@ -243,7 +250,7 @@ static void writeTextFile(const String& path, const String& content) {
 void loadHTMLFromSD() {
     int count = 0;
     for (int i = 1; i <= 20; ++i) {
-        String filename = pathForIndex(i);
+        String filename = htmlPathForIndex(i);
         File file = SD.open(filename);
         if (file) {
             String content = "";
@@ -425,9 +432,14 @@ void menu_loop() {
 
         case SELECT_HTML: {
             
-            String htmlList = "1. Login page\n 2. Survey page\n 3. Announcement page\n 4. Minimal welcome";
-            
-            
+            drawHtmlList();            
+            if (M5Cardputer.Keyboard.isChange() && M5Cardputer.Keyboard.isPressed()) {
+                auto keys = M5Cardputer.Keyboard.keysState();
+                
+                if (keys.enter) {
+                    currentState = RUNNING;
+                }
+            }
             break;
         }
     }
