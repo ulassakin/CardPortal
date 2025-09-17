@@ -248,7 +248,7 @@ static void writeTextFile(const String& path, const String& content) {
 
 
 void loadHTMLFromSD() {
-    int htmlFileCount = 0;
+    htmlFileCount = 0;
     for (int i = 0; i < 4; i++) {
         String filename = htmlPathForIndex(i);
         File file = SD.open(filename);
@@ -435,7 +435,9 @@ void menu_loop() {
                 auto keys = M5Cardputer.Keyboard.keysState();
                 
                 if (keys.enter) {
+                    loadHTMLFromSD();
                     currentState = RUNNING;
+                    
                 }
             }
             break;
