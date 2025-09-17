@@ -248,21 +248,19 @@ static void writeTextFile(const String& path, const String& content) {
 
 
 void loadHTMLFromSD() {
-    int count = 0;
-    for (int i = 1; i <= 20; ++i) {
+    int htmlFileCount = 0;
+    for (int i = 0; i < 4; i++) {
         String filename = htmlPathForIndex(i);
         File file = SD.open(filename);
         if (file) {
             String content = "";
             while (file.available()) {
-                char c = file.read();
-                // store only printable ASCII to avoid weird control keys
-                if (c >= 32 && c <= 126) content += c;
+                content += (char)file.read();
             }
             file.close();
             content.trim();
             if (content.length() > 0) {
-               // notes[noteCount++] = content;
+               htmlFiles[htmlFileCount++] = content;
             }
         }
     }
