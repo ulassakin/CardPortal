@@ -34,6 +34,8 @@ String currentText = "";
 String htmlFiles[20];
 int htmlFileCount = 0;
 
+String chosenHTML = "";
+
 bool cursorVisible = true;
 unsigned long lastBlink = 0;
 const unsigned long blinkInterval = 500; // ms
@@ -436,8 +438,21 @@ void menu_loop() {
                 
                 if (keys.enter) {
                     loadHTMLFromSD();
+                    chosenHTML = htmlFiles[selectedHtmlIndex];
                     currentState = RUNNING;
-                    
+                }
+
+                else {
+                    for (auto k : keys.word) {
+                        if (k == 59 && selectedHtmlIndex > 0) {
+                            selectedHtmlIndex--;
+                            drawHtmlList();
+                        }
+                        else if (k == 46 && selectedHtmlIndex < 3) {
+                            selectedHtmlIndex++;
+                            drawHtmlList();
+                        }
+                    }
                 }
             }
             break;
