@@ -41,6 +41,8 @@ const unsigned long blinkInterval = 500; // ms
 M5GFX &dsp = M5Cardputer.Display;
 bool pressDrawn = false;
 
+int selectedHtmlIndex = 0;
+
 AppState currentState;
 
 M5Canvas portalCanvas(&M5Cardputer.Display);
@@ -235,6 +237,9 @@ static void writeTextFile(const String& path, const String& content) {
     f.close();
 }
 
+
+
+
 void loadHTMLFromSD() {
     int count = 0;
     for (int i = 1; i <= 20; ++i) {
@@ -250,11 +255,37 @@ void loadHTMLFromSD() {
             file.close();
             content.trim();
             if (content.length() > 0) {
-                notes[noteCount++] = content;
+               // notes[noteCount++] = content;
             }
         }
     }
 }
+
+void drawHtmlList() {
+    portalCanvas.fillScreen(BLACK);
+    portalCanvas.setFont(&PressStart2P_Regular7pt7b);
+    portalCanvas.setTextColor(WHITE, BLACK);
+
+    const char* options[4] = {
+        "Login Page",
+        "Survey Page",
+        "Notice Page",
+        "Welcome Page"
+    };
+
+    for (int i = 0; i < 4; i++) {
+        if (i == selectedHtmlIndex) {
+            portalCanvas.setTextColor(BLACK, COL_PURPLE); // ters renk: seçili
+        } else {
+            portalCanvas.setTextColor(WHITE, BLACK);
+        }
+        portalCanvas.setCursor(20, 40 + i * 20);
+        portalCanvas.print(options[i]);
+    }
+
+    portalCanvas.pushSprite(0,0);
+}
+
 
 void menu_setup(){
     portalCanvas.createSprite(dsp.width(), dsp.height());
@@ -268,6 +299,12 @@ void menu_setup(){
         Serial.println("SD init OK");
         
     }
+
+    writeTextFile("/login.html", html_login);
+    writeTextFile("/survey.html", html_survey);
+    writeTextFile("/notice.html", html_notice);
+    writeTextFile("/welcome.html", html_welcome);
+
 }
 
 void menu_loop() {
@@ -387,6 +424,10 @@ void menu_loop() {
         }
 
         case SELECT_HTML: {
+            
+            String htmlList = "1. Login page\n 2. Survey page\n 3. Announcement page\n 4. Minimal welcome";
+            
+            
             break;
         }
     }
