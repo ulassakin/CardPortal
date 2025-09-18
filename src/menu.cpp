@@ -298,8 +298,12 @@ void drawRunning(){
     portalCanvas.setFont(&PressStart2P_Regular7pt7b);
     portalCanvas.setTextColor(WHITE, BLACK);
     portalCanvas.setCursor(20,20);
-    portalCanvas.print("The evil portal is running...");
-    portalCanvas.print("The user info will be showed");
+    portalCanvas.println("The evil portal is");
+    portalCanvas.setCursor(20,50);
+    portalCanvas.println("running...");
+    portalCanvas.setCursor(20,80);
+    portalCanvas.println("User info will show");
+    portalCanvas.pushSprite(0,0);
 }
 
 void menu_setup(){
@@ -448,6 +452,7 @@ void menu_loop() {
                     loadHTMLFromSD();
                     chosenHTML = htmlFiles[selectedHtmlIndex];
                     currentState = RUNNING;
+                    drawRunning();
                 }
 
                 else {
