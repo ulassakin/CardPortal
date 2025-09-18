@@ -297,12 +297,9 @@ void drawRunning(){
     portalCanvas.fillScreen(BLACK);
     portalCanvas.setFont(&PressStart2P_Regular7pt7b);
     portalCanvas.setTextColor(WHITE, BLACK);
-    portalCanvas.setCursor(20,20);
-    portalCanvas.println("The evil portal is");
-    portalCanvas.setCursor(20,50);
-    portalCanvas.println("running...");
-    portalCanvas.setCursor(20,80);
-    portalCanvas.println("User info will show");
+    portalCanvas.setCursor(2,2);
+    portalCanvas.println("Captive Info: ");
+    
     portalCanvas.pushSprite(0,0);
 }
 
