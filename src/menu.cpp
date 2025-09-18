@@ -293,6 +293,14 @@ void drawHtmlList() {
     portalCanvas.pushSprite(0,0);
 }
 
+void drawRunning(){
+    portalCanvas.fillScreen(BLACK);
+    portalCanvas.setFont(&PressStart2P_Regular7pt7b);
+    portalCanvas.setTextColor(WHITE, BLACK);
+    portalCanvas.setCursor(20,20);
+    portalCanvas.print("The evil portal is running...");
+    portalCanvas.print("The user info will be showed");
+}
 
 void menu_setup(){
     portalCanvas.createSprite(dsp.width(), dsp.height());
@@ -455,6 +463,13 @@ void menu_loop() {
                     }
                 }
             }
+            break;
+        }
+
+        case RUNNING: {
+            
+            
+            
             break;
         }
     }
