@@ -114,12 +114,7 @@ void setUpWebserver(AsyncWebServer &server, const IPAddress &localIP) { // Webse
 
 void portal_begin() {
 	// Set the transmit buffer size for the Serial object and start it with a baud rate of 115200.
-	Serial.setTxBufferSize(1024);
-	Serial.begin(115200);
-
-	// Wait for the Serial object to become available.
-	while (!Serial)
-		;
+	
 
 	// Print a welcome message to the Serial port.
 	Serial.println("\n\nCaptive Test, V0.5.0 compiled " __DATE__ " " __TIME__ " by CD_FER");  //__DATE__ is provided by the platformio ide
