@@ -5,6 +5,10 @@ It provides a retro-style UI to configure Wi-Fi SSID, password, and select HTML 
 
 ---
 
+![CardPortal Demo](demo/cardportal.gif)
+
+---
+
 ## ✨ Features
 - Retro intro screen with glitch-style logo
 - Multi-state navigation:
