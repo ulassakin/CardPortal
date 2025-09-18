@@ -12,7 +12,7 @@ void setup() {
   menu_setup();
 
   runMinimalIntro();   // Intro
-  // portal_begin();      // Start the captive portal
+  
   currentState = PRESS;
   
 }
