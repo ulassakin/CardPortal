@@ -15,11 +15,15 @@ void setup() {
   
   currentState = PRESS;
   
+  if (currentState == RUNNING) {
+    portal_begin();
+  }
+
 }
 
 void loop() {
   if (currentState == RUNNING) {
-    portal_begin();
+    
     portal_loop_once();   // Captive portal aktif
   } else {
     menu_loop();          // Menü state machine
