@@ -26,7 +26,7 @@
 //};
 
 String SSID = "";
-String pass = "";
+
 int cursorPosition = 0;
 
 String currentText = "";
@@ -184,9 +184,7 @@ void drawWithCursor() {
     if (currentState == ENTER_SSID) {
         header = "Enter SSID:";
     } 
-    else if (currentState == ENTER_PASS) {
-        header = "Enter Password:";
-    } 
+    
     else if (currentState == SELECT_HTML) {
         header = "Select HTML\n";
     } 
@@ -326,7 +324,7 @@ void menu_setup(){
 void menu_loop() {
     M5Cardputer.update();
 
-    if (currentState == ENTER_PASS || currentState == ENTER_SSID) {
+    if (currentState == ENTER_SSID) {
         if (millis() - lastBlink >= blinkInterval) {
             cursorVisible = !cursorVisible;
             lastBlink = millis();
@@ -360,51 +358,7 @@ void menu_loop() {
                         SSID = currentText;
                         currentText = "";
                         cursorPosition = 0;
-                        currentState = ENTER_PASS;
-                    }
-                }
-
-                else if (keys.del && currentText.length() > 0) {
-                    if (cursorPosition > 0) {
-                        currentText.remove(cursorPosition - 1, 1);
-                        cursorPosition--;
-                    }
-                    drawWithCursor();
-                }
-
-                else {
-                    for (auto k : keys.word) {
-                        if (k == 44 & cursorPosition > 0) {
-                            cursorPosition--;
-                            drawWithCursor();
-                        }
-                        else if (k == 47 && (cursorPosition < currentText.length())) {
-                            cursorPosition++;
-                            drawWithCursor();
-                        }
-                        else if (k >= 32 && k <= 126) {
-                            String left  = currentText.substring(0, cursorPosition);
-                            String right = currentText.substring(cursorPosition);
-                            currentText = left + (char)k + right;
-                            cursorPosition++;
-                            drawWithCursor();
-                        }
-                    }
-                }
-            }
-            break;
-        }
-
-        case ENTER_PASS: {
-            if (M5Cardputer.Keyboard.isChange() && M5Cardputer.Keyboard.isPressed()) {
-                auto keys = M5Cardputer.Keyboard.keysState();
-                if(keys.enter){
-                    if (currentText.length() > 0) {
-                        pass = currentText;
-                        currentText = "";
-                        cursorPosition = 0;
                         currentState = SELECT_HTML;
-                        drawWithCursor();
                     }
                 }
 
@@ -438,6 +392,8 @@ void menu_loop() {
             }
             break;
         }
+
+        
 
         case SELECT_HTML: {
             
