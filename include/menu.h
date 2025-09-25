@@ -5,7 +5,6 @@
 enum AppState {
     PRESS,
     ENTER_SSID,
-    ENTER_PASS,
     SELECT_HTML,
     RUNNING,
 };
